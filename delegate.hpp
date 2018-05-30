@@ -3,9 +3,14 @@
 
 namespace pw
 {
+    template <typename>
+    class delegate;
+
+    template <typename>
+    class const_delegate;
 
     template <typename _ReturnType, typename... _Params>
-    class delegate
+    class delegate<_ReturnType(_Params...)>
     {
 
     private:
@@ -19,6 +24,30 @@ namespace pw
             m_object(nullptr),
             m_function(nullptr)
         {
+        }
+
+        template<_ReturnType(*_Function)(_Params...)>
+        static delegate<_ReturnType(_Params...)> create()
+        {
+            delegate<_ReturnType(_Params...)> delegate;
+            delegate.bind<_Function>();
+            return delegate;
+        }
+
+        template <class _ObjectType, _ReturnType(_ObjectType::*_Function)(_Params...)>
+        static delegate<_ReturnType(_Params...)> create(_ObjectType *_object)
+        {
+            delegate<_ReturnType(_Params...)> delegate;
+            delegate.bind<_ObjectType, _Function>(_object);
+            return delegate;
+        }
+
+        template <class _ObjectType, _ReturnType(_ObjectType::*_Function)(_Params...) const>
+        static delegate<_ReturnType(_Params...)> create(_ObjectType *_object)
+        {
+            delegate<_ReturnType(_Params...)> delegate;
+            delegate.bind<_ObjectType, _Function>(_object);
+            return delegate;
         }
 
         template<_ReturnType(*_Function)(_Params...)>
@@ -96,7 +125,7 @@ namespace pw
 
     // specialization for const functions
     template <typename _ReturnType, typename... _Params>
-    class const_delegate
+    class const_delegate<_ReturnType(_Params...)>
     {
 
     private:
@@ -110,6 +139,22 @@ namespace pw
             m_object(nullptr),
             m_function(nullptr)
         {
+        }
+
+        template<_ReturnType(*_Function)(_Params...)>
+        static const_delegate<_ReturnType(_Params...)> create()
+        {
+            delegate<_ReturnType(_Params...)> delegate;
+            delegate.bind<_Function>();
+            return delegate;
+        }
+
+        template <class _ObjectType, _ReturnType(_ObjectType::*_Function)(_Params...) const>
+        static const_delegate<_ReturnType(_Params...)> create(_ObjectType *_object)
+        {
+            const_delegate<_ReturnType(_Params...)> delegate;
+            delegate.bind<_ObjectType, _Function>(_object);
+            return delegate;
         }
 
         template<_ReturnType(*_Function)(_Params...)>
