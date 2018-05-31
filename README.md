@@ -83,7 +83,7 @@ int main()
     
     // adding a function without creating a delegate first
     // the same rules as for creating delegates apply here
-    a.onUpdate.add<B, &B::do_something_else>(&b)
+    a.onUpdate.add<B, &B::do_something_else>(&b);
     
     // invoke the event
     a.onUpdate.invoke(); // calls b.do_something() and b.do_something_else()
