@@ -1,5 +1,5 @@
 # pw-event-cpp
-Fast, header-only C++11 events and delegates.
+Fast, header-only C++11 events and delegates w/o any need for inheritance to use events. (also supports MSVC)
   
 ## Usage
 
