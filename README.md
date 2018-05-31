@@ -7,6 +7,8 @@ Fast, header-only C++11 events and delegates.
 
 Delegates are more or less like simple function-pointer, but can also contain member functions (additionally to the object they're called on) without changing their type. Unlike with std::function, the object on which member functions are called is also contained inside the delegate-object.
 
+A delegate can always only 'contain' one function (in the example below further calls to ~.bind overwrite the previously bound one)
+
 ```cpp
 
 #include "delegate.hpp"
@@ -65,6 +67,7 @@ class B
 public:
     void do_something() {}
     void do_something_else() {}
+    void do_something_utterly_different(float _x, float _y) {}
 };
 
 void do_something_with_parameters(float _x, float _y) {}
@@ -87,6 +90,7 @@ int main()
     
     // we can also have events with parameters
     a.onMouseMove.add<&do_something_with_parameters>();
+    a.onMouseMove.add<B, &B::do_something_utterly_different>(&b);
     
     // all bound delegates are called with the parameters
     a.onMouseMove(0.0f, 1.0f);
