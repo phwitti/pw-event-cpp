@@ -5,7 +5,7 @@ Fast, header-only C++11 events and delegates w/o any need for inheritance. (also
 
 ### Delegates
 
-Delegates are more or less like simple function-pointer, but can also contain member functions (additionally to the object they're called on) without changing their type. Unlike with std::function, the object on which member functions are called is also contained inside the delegate-object.
+Delegates are more or less like simple function-pointer, but can also contain member functions (additionally to the object they're called on) without changing their type. Unlike with std::function, the object on which member functions are called is also contained inside the delegate-object and they're equality comparable.
 
 A delegate can always only 'contain' one function (in the example below further calls to ~.bind overwrite the previously bound one)
 
