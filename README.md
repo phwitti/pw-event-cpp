@@ -5,13 +5,14 @@ Fast, header-only C++11 events and delegates w/o any need for inheritance. (also
 
 ### Delegates
 
-Delegates are more or less like simple function-pointer, but can also contain member functions (additionally to the object they're called on) without changing their type. Unlike with std::function, the object on which member functions are called is also contained inside the delegate-object and they're equality comparable.
+Delegates are more or less like simple function-pointer, but can also contain member functions (additionally to the object they're called on) without changing their type. Unlike with std::function, the object on which member functions are called is also contained inside the delegate-object and they're equality comparable. They're fully convertable to std::function though.
 
 A delegate can always only 'contain' one function (in the example below further calls to ~.bind overwrite the previously bound one)
 
 ```cpp
 
 #include "delegate.hpp"
+#include <functional> // only for converting to std::function -- not needed by default
 
 void free_function(int _i) {}
 
@@ -39,6 +40,9 @@ int main()
     // call the currently bound function
     delegate.invoke(0);
     
+    // we can turn a delegate to a std::function
+    std::function<void(int)> func = delegate;
+    
     // we can also create a delegate in one line
     auto one_line_delegate = pw::delegate<void(int)>::create<A, &A::member_function>(&a);
     one_line_delegate(0); // invoke with ()-operator
@@ -49,7 +53,7 @@ int main()
 
 ### Events
 
-Events can contain several delegates, which can easily be invoked in one go.
+Events can contain several delegates as well as std::functions, which can easily be invoked in one go.
 
 ```cpp
 
@@ -95,6 +99,13 @@ int main()
     // all bound delegates are called with the parameters
     a.onMouseMove(0.0f, 1.0f);
     
+    // we can always remove delegates again
+    a.onMouseMove.remove<B, &B::do_something_utterly_different>(&b);
+    
+    // we can also add lambdas or other std::function types (with or w/o captures)
+    // -- though they can't be removed anymore
+    a.onMouseMove.add([=](float x, float y) {});
+    
     return 0;
 }
 ```
@@ -104,7 +115,3 @@ int main()
 - [The Impossibly Fast C++
   Delegates](http://www.codeproject.com/Articles/11015/The-Impossibly-Fast-C-Delegates),
   author: Sergey Ryazanov
-
-## TODO
-- Evaluate conversion from delegate<_ReturnType(_Params...)> to std::function<_ReturnType(_Params...)>
-  - If possible add std::function support to events
