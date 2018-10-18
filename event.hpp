@@ -33,7 +33,7 @@ namespace pw
         {
             m_delegates.emplace_back();
             auto &delegate = m_delegates.back();
-            delegate.bind<_Function>();
+            delegate.template bind<_Function>();
         }
 
         template <class _ObjectType, _ReturnType(_ObjectType::*_Function)(_Params...)>
@@ -41,7 +41,7 @@ namespace pw
         {
             m_delegates.emplace_back();
             auto &delegate = m_delegates.back();
-            delegate.bind<_ObjectType, _Function>(_object);
+            delegate.template bind<_ObjectType, _Function>(_object);
         }
 
         template <class _ObjectType, _ReturnType(_ObjectType::*_Function)(_Params...) const>
@@ -49,7 +49,7 @@ namespace pw
         {
             m_delegates.emplace_back();
             auto &delegate = m_delegates.back();
-            delegate.bind<_ObjectType, _Function>(_object);
+            delegate.template bind<_ObjectType, _Function>(_object);
         }
 
         void remove(delegate<_ReturnType(_Params...)> &_delegate)
@@ -60,19 +60,19 @@ namespace pw
         template<_ReturnType(*_Function)(_Params...)>
         void remove()
         {
-            m_delegates.remove(delegate<_ReturnType(_Params...)>::create<_Function>());
+            m_delegates.remove(delegate<_ReturnType(_Params...)>::template create<_Function>());
         }
 
         template <class _ObjectType, _ReturnType(_ObjectType::*_Function)(_Params...)>
         void remove(_ObjectType *_object)
         {
-            m_delegates.remove(delegate<_ReturnType(_Params...)>::create<_ObjectType, _Function>(_object));
+            m_delegates.remove(delegate<_ReturnType(_Params...)>::template create<_ObjectType, _Function>(_object));
         }
 
         template <class _ObjectType, _ReturnType(_ObjectType::*_Function)(_Params...) const>
         void remove(_ObjectType *_object)
         {
-            m_delegates.remove(delegate<_ReturnType(_Params...)>::create<_ObjectType, _Function>(_object));
+            m_delegates.remove(delegate<_ReturnType(_Params...)>::template create<_ObjectType, _Function>(_object));
         }
 
         void invoke(_Params... _params) const
